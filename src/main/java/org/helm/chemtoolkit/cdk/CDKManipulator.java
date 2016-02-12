@@ -1,18 +1,23 @@
 /*******************************************************************************
  * Copyright C 2015, The Pistoia Alliance
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
- * Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  ******************************************************************************/
 package org.helm.chemtoolkit.cdk;
 /**
@@ -92,7 +97,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * removes a extended part of smiles if exists
-   * 
+   *
    * @param smiles to normalize
    * @return a normalized smiles
    */
@@ -106,7 +111,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * replace placeholder "*" with "R" for CDK
-   * 
+   *
    * @param extendedSmiles extended smiles
    * @param groups a list of RGroups
    * @return a smiles with RGroups in CDK format
@@ -130,7 +135,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -151,7 +156,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -169,7 +174,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * converts smiles to molfile
-   * 
+   *
    * @param smiles to convert
    * @return molfile
    * @throws CTKException
@@ -201,7 +206,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * converts molfile to smiles
-   * 
+   *
    * @param molfile to convert
    * @return smiles
    * @throws CTKException
@@ -250,7 +255,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -275,7 +280,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -292,7 +297,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -360,7 +365,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -378,7 +383,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * returns a smiles string represents a given molecule
-   * 
+   *
    * @param molecule
    * @return smiles
    * @throws CTKException
@@ -398,7 +403,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * returns a polymer instance of {@link IAtomContainer}
-   * 
+   *
    * @param sequence
    * @return a polymer
    * @throws CTKException
@@ -424,7 +429,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * 
+   *
    * {@inheritDoc}
    */
   @Override
@@ -443,7 +448,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * parses smiles to a molecule
-   * 
+   *
    * @param smiles to parse
    * @return a molecule instance of {@link IAtomContainer}
    * @throws CTKException
@@ -451,7 +456,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   private IAtomContainer getIAtomContainer(String smiles) throws CTKException {
     IAtomContainer molecule = null;
     smiles = normalize(smiles, getRGroupsFromExtendedSmiles(smiles));
-    // LOG.debug("smiles= " + smiles);
+    LOG.debug("smiles= " + smiles);
     SmilesParser smilesParser = new SmilesParser(SilentChemObjectBuilder.getInstance());
     try {
 
@@ -539,7 +544,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @throws CTKException
    */
   @Override
