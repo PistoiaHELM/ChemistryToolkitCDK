@@ -23,7 +23,7 @@ import org.helm.chemtoolkit.AbstractMolecule.Flag;
 import org.helm.chemtoolkit.CTKException;
 import org.helm.chemtoolkit.IAtomBase;
 import org.helm.chemtoolkit.IBondBase;
-import org.openscience.cdk.Atom;
+import org.openscience.cdk.silent.Atom;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IPseudoAtom;

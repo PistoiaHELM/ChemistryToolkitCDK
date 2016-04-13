@@ -50,8 +50,7 @@ import org.helm.chemtoolkit.IAtomBase;
 import org.helm.chemtoolkit.IBondBase;
 import org.helm.chemtoolkit.IStereoElementBase;
 import org.helm.chemtoolkit.MoleculeInfo;
-import org.openscience.cdk.Bond;
-import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.silent.Bond;
 import org.openscience.cdk.aromaticity.Aromaticity;
 import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
@@ -223,8 +222,8 @@ public class CDKManipulator extends AbstractChemistryManipulator {
         MDLV2000Reader reader = new MDLV2000Reader(stringReader)) {
 
       IAtomContainer molecule =
-          reader.read(DefaultChemObjectBuilder.getInstance().newInstance(IAtomContainer.class));
-
+          reader.read(SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class));
+      System.out.println(molecule.getClass());
       ElectronDonation model = ElectronDonation.cdk();
       CycleFinder cycles = Cycles.cdkAromaticSet();
       Aromaticity aromaticity = new Aromaticity(model, cycles);
@@ -313,7 +312,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
           MDLV2000Reader reader = new MDLV2000Reader(stringReader)) {
         IAtomContainer mol =
             reader.read(SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class));
-
+        System.out.println(mol.getClass());
         List<IGenerator<IAtomContainer>> generators = new ArrayList<>();
 
         generators.add(new BasicSceneGenerator());
