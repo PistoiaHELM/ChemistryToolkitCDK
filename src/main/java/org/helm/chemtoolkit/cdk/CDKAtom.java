@@ -154,7 +154,11 @@ public class CDKAtom extends IAtomBase {
   @Override
   public void setRgroup(int rGroup) throws CTKException {
     if (atom instanceof IPseudoAtom) {
-      ((IPseudoAtom) atom).setLabel(((IPseudoAtom) atom).getLabel().replace(String.valueOf(this.rGroup), String.valueOf(rGroup)));
+      IPseudoAtom patom = (IPseudoAtom) atom;
+      patom.setLabel("R" + rGroup);
+      // HELM Rgroups aren't really RGroups but attachment points, CDK can capture these
+      // explicitly but this would change how they are displayed (more correct IMO)
+      // patom.setAttachPointNum(rGroup);
       this.rGroup = rGroup;
       this.flag = Flag.PROCESSED;
     } else
