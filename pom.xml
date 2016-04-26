@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-bundle</artifactId>
-            <version>1.5.11</version>
+            <version>1.5.13</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
