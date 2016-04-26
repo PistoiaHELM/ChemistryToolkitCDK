@@ -50,6 +50,8 @@ import org.helm.chemtoolkit.IAtomBase;
 import org.helm.chemtoolkit.IBondBase;
 import org.helm.chemtoolkit.IStereoElementBase;
 import org.helm.chemtoolkit.MoleculeInfo;
+import org.openscience.cdk.depict.DepictionGenerator;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.silent.Bond;
 import org.openscience.cdk.aromaticity.Aromaticity;
 import org.openscience.cdk.aromaticity.ElectronDonation;
@@ -93,6 +95,9 @@ import org.slf4j.LoggerFactory;
 public class CDKManipulator extends AbstractChemistryManipulator {
 
   private static final Logger LOG = LoggerFactory.getLogger(CDKManipulator.class);
+
+  // moderately expensive to create (font embedded) so we have one per manipulator
+  private final DepictionGenerator depictionGenerator = new DepictionGenerator();
 
   /**
    * removes a extended part of smiles if exists
@@ -301,64 +306,31 @@ public class CDKManipulator extends AbstractChemistryManipulator {
    */
   @Override
   public byte[] renderMol(String molFile, OutputType outputType, int width, int height, int rgb) throws CTKException {
+
+    DepictionGenerator myGenerator = depictionGenerator.withBackgroundColor(new Color(rgb))
+                                                       .withSize(width, height);
+    // can call set 'setZoom(x)' to change the scaling if required, by default depictions are smaller
+    // than old version but may still want a setZoom(0.8) etc
+
     byte[] result;
+    IChemObjectBuilder    bldr = SilentChemObjectBuilder.getInstance();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(baos)) {
+    try (StringReader   stringReader  = new StringReader(molFile);
+         MDLV2000Reader molfileReader = new MDLV2000Reader(stringReader)) {
 
-      Rectangle drawArea = new Rectangle(width, height);
+      IAtomContainer mol = molfileReader.read(bldr.newInstance(IAtomContainer.class, 0, 0, 0, 0));
+      BufferedImage  img = myGenerator.depict(mol)
+                                      .toImg();
 
-      try (StringReader stringReader = new StringReader(molFile);
-          MDLV2000Reader reader = new MDLV2000Reader(stringReader)) {
-        IAtomContainer mol =
-            reader.read(SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class));
-        System.out.println(mol.getClass());
-        List<IGenerator<IAtomContainer>> generators = new ArrayList<>();
-
-        generators.add(new BasicSceneGenerator());
-        generators.add(new BasicBondGenerator());
-        generators.add(new BasicAtomGenerator());
-
-        //
-        CDKAtomTypeMatcher matcher = CDKAtomTypeMatcher.getInstance(mol.getBuilder());
-        for (IAtom atom : mol.atoms()) {
-          IAtomType type = matcher.findMatchingAtomType(mol, atom);
-          AtomTypeManipulator.configure(atom, type);
-        }
-        CDKHydrogenAdder adder = CDKHydrogenAdder.getInstance(mol.getBuilder());
-        adder.addImplicitHydrogens(mol);
-
-        ExtendedAtomGenerator gen = new ExtendedAtomGenerator();
-        for (IGeneratorParameter<?> param : gen.getParameters())
-          if (param instanceof BasicAtomGenerator.ShowExplicitHydrogens) {
-            ((BasicAtomGenerator.ShowExplicitHydrogens) param).setValue(true);
-          }
-
-        AtomContainerRenderer renderer = new AtomContainerRenderer(generators, new AWTFontManager());
-
-        renderer.setup(mol, drawArea);
-
-        int scaledw = width / 2;
-        int scaledh = (scaledw * 3) / 4;
-        BufferedImage scaled = new BufferedImage(scaledw, scaledh, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g = scaled.createGraphics();
-        g.setBackground(new Color(rgb));
-        g.drawImage(scaled, scaledw, scaledh, null);
-
-        renderer.paint(mol, new AWTDrawVisitor(g), new Rectangle2D.Double(0, 0, scaledw, scaledh), true);
-
-        ImageIO.write(scaled, outputType.toString(), ios);
-      } catch (IOException e) {
-        throw new CTKException("unable to invoke the reader", e);
-      } catch (CDKException e) {
-        throw new CTKException("invalid molfile", e);
-      }
-
-      result = baos.toByteArray();
-    } catch (IOException es) {
-      throw new CTKException("unable to invoke outputstream");
+      ImageIO.write(img, outputType.toString(), baos);
+    } catch (IOException e) {
+      throw new CTKException("unable to invoke the reader", e);
+    } catch (CDKException e) {
+      throw new CTKException("invalid molfile", e);
     }
+
+    result = baos.toByteArray();
     return result;
 
   }
