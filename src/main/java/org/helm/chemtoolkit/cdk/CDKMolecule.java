@@ -179,14 +179,12 @@ public class CDKMolecule extends AbstractMolecule {
   public void generateCoordinates(int dem) throws CTKException {
 
     StructureDiagramGenerator sdg = new StructureDiagramGenerator();
-    sdg.setMolecule(molecule);
+    sdg.setMolecule(molecule, false);
     try {
       sdg.generateCoordinates();
     } catch (CDKException e) {
       throw new CTKException(e.getMessage(), e);
     }
-    molecule = sdg.getMolecule();
-
   }
 
   /**

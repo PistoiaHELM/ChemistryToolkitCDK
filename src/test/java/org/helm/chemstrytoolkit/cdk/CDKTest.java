@@ -87,7 +87,7 @@ public class CDKTest extends TestBase {
   public void convertMolFile2SMILES() throws CTKException, IOException {
     super.convertMolFile2SMILES();
     LOG.debug("canonical=" + testResult);
-    Assert.assertEquals(testResult, "*OCC1OC([H])(N2C=NC3=C(N=CN=C32)N)C(O)C1O*");
+    Assert.assertEquals(testResult, "*OCC1OC([H])(N2C=NC=3C(=NC=NC32)N)C(O)C1O*");
 
   }
 
@@ -95,7 +95,7 @@ public class CDKTest extends TestBase {
   @Test(groups = {"CDKTest"})
   public void canonicalizeTest() throws CTKSmilesException, CTKException {
     super.canonicalizeTest();
-    Assert.assertEquals(testResult, "O=C1NC(=NC=2C(=NN(C12)C)CC)C3=CC(=CC=C3OCC)S(=O)(=O)N4CCN(C)CC4");
+    Assert.assertEquals(testResult, "O=C1NC(=NC=2C(=NN(C12)C)CC)C=3C=C(C=CC3OCC)S(=O)(=O)N4CCN(C)CC4");
 
   }
 

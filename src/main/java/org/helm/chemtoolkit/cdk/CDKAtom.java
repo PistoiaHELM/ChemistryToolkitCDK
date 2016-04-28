@@ -51,12 +51,12 @@ public class CDKAtom extends IAtomBase {
    * @param atom
    */
   public CDKAtom(IAtom atom) {
-    new CDKAtom(atom, 0, new ArrayList<IBond>());
+    new CDKAtom(atom, 0, new ArrayList<IBond>(4));
 
   }
 
   public CDKAtom(IAtom atom, int rGroup) {
-    new CDKAtom(atom, rGroup, new ArrayList<IBond>());
+    new CDKAtom(atom, rGroup, new ArrayList<IBond>(4));
 
   }
 
@@ -69,7 +69,7 @@ public class CDKAtom extends IAtomBase {
     this.atom = atom;
     this.flag = Flag.NONE;
     this.rGroup = rGroup;
-    this.bonds = new ArrayList<CDKBond>();
+    this.bonds = new ArrayList<CDKBond>(4);
     for (IBond bond : bonds) {
       this.bonds.add(new CDKBond(bond));
     }
@@ -154,7 +154,11 @@ public class CDKAtom extends IAtomBase {
   @Override
   public void setRgroup(int rGroup) throws CTKException {
     if (atom instanceof IPseudoAtom) {
-      ((IPseudoAtom) atom).setLabel(((IPseudoAtom) atom).getLabel().replace(String.valueOf(this.rGroup), String.valueOf(rGroup)));
+      IPseudoAtom patom = (IPseudoAtom) atom;
+      patom.setLabel("R" + rGroup);
+      // HELM Rgroups aren't really RGroups but attachment points, CDK can capture these
+      // explicitly but this would change how they are displayed (more correct IMO)
+      // patom.setAttachPointNum(rGroup);
       this.rGroup = rGroup;
       this.flag = Flag.PROCESSED;
     } else
