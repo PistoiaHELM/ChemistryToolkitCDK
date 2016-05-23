@@ -169,10 +169,15 @@ public class CDKTest extends TestBase {
   @Test(groups = {"CDKTest"}, expectedExceptions = CTKException.class)
   public void merge2Ribose() throws IOException, CTKException {
     String ribose = "O[C@H]1[C@H]([*])O[C@H](CO[*])[C@H]1O[*] |$;;;_R3;;;;;_R1;;;_R2$|";
-
+	  
+    ribose = manipulator.convertExtendedSmiles(ribose);
     String riboseR1 = "[*][H] |$_R1;$|";
     String riboseR2 = "[*][H] |$_R2;$|";
     String riboseR3 = "O[*] |$;_R3$|";
+    
+    riboseR1 = manipulator.convertExtendedSmiles(riboseR1);
+    riboseR2 = manipulator.convertExtendedSmiles(riboseR2);
+    riboseR3 = manipulator.convertExtendedSmiles(riboseR3);
 
     AttachmentList groupsRibose = new AttachmentList();
 
@@ -187,6 +192,7 @@ public class CDKTest extends TestBase {
     @SuppressWarnings("unused")
     AbstractMolecule molecule =
         manipulator.merge(ribose1, ribose1.getRGroupAtom(3, true), ribose2, ribose2.getRGroupAtom(3, true));
+    System.out.println(manipulator.convertMolecule(molecule, StType.SMILES));
 
   }
 
@@ -199,4 +205,11 @@ public class CDKTest extends TestBase {
     LOG.debug(res);
 
   }
+  
+  
+
+  
+  
+  
+
 }

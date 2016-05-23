@@ -37,6 +37,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
@@ -106,11 +108,11 @@ public class CDKManipulator extends AbstractChemistryManipulator {
    * @return a normalized smiles
    */
   private String normalize(String smiles) {
-    String result = null;
-    String[] components = smiles.split(SMILES_EXTENSION_SEPARATOR_REGEX);
-    result = components[0];
+	  String result = null;
+	  String[] components = smiles.split(SMILES_EXTENSION_SEPARATOR_REGEX);
+	  result = components[0];
 
-    return result;
+	  return result;
   }
 
   /**
@@ -122,20 +124,29 @@ public class CDKManipulator extends AbstractChemistryManipulator {
    */
   private String normalize(String extendedSmiles, List<String> groups) {
     String smiles = null;
-    String result = "";
     smiles = normalize(extendedSmiles);
-    Iterator<String> iterator = groups.iterator();
-    for (char item : smiles.toCharArray()) {
-      if (item == '*' && iterator.hasNext()) {
-        result += groups.get(groups.indexOf(iterator.next()));
+  
+    Pattern pattern = Pattern.compile("\\[\\*\\]|\\[\\*:[1-9]\\d*\\]|\\[\\w+:[1-9]\\d*\\]");
+    Matcher matcher = pattern.matcher(smiles);
+	StringBuilder sb = new StringBuilder();
+	int start = 0;
+	String rGroup = "";
+	int index = 0;
+	while(matcher.find() && groups.size() > 0){
+		rGroup = smiles.substring(start, matcher.end());
+		rGroup = rGroup.replace(matcher.group(),  "[" + groups.get(index) + "]");
+		
+		sb.append(rGroup);
+		index ++;
+		start = matcher.end();
+	}
+	
+	if( start < smiles.length()){
+		sb.append(smiles.substring(start));
+	}
 
-      } else
-        result += item;
 
-    }
-
-    return result;
-
+	return sb.toString();
   }
 
   /**
@@ -228,7 +239,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
       IAtomContainer molecule =
           reader.read(SilentChemObjectBuilder.getInstance().newInstance(IAtomContainer.class));
-      System.out.println(molecule.getClass());
       ElectronDonation model = ElectronDonation.cdk();
       CycleFinder cycles = Cycles.cdkAromaticSet();
       Aromaticity aromaticity = new Aromaticity(model, cycles);
@@ -245,10 +255,8 @@ public class CDKManipulator extends AbstractChemistryManipulator {
       result = molecule;
 
     } catch (IllegalArgumentException e) {
-      System.out.println(e.getMessage());
       throw new CTKException("illegal argument", e);
     } catch (CDKException e) {
-      System.out.println(e.getMessage());
       throw new CTKException("Unable to get a molecule from molfile", e);
     } catch (IOException e) {
       throw new CTKException("unable to invoke the MDL writers/readers", e);
@@ -346,7 +354,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
     IAtomContainer molecule = getPolymer(sequence);
 
     molFile = convertSMILES2MolFile(molecule2Smiles(molecule));
-    System.out.println(molFile);
 
     return renderMol(molFile, outputType, width, height, rgb);
 
@@ -429,8 +436,11 @@ public class CDKManipulator extends AbstractChemistryManipulator {
     smiles = normalize(smiles, getRGroupsFromExtendedSmiles(smiles));
     LOG.debug("smiles= " + smiles);
     SmilesParser smilesParser = new SmilesParser(SilentChemObjectBuilder.getInstance());
-    try {
 
+    try {
+       if(smiles.contains(".")){
+    	   throw new  CTKException("Molecule not connected. Use ConnectivityChecker.partitionIntoMolecules() and do the layout for every single component");
+       }
       molecule = smilesParser.parseSmiles(smiles);
       StructureDiagramGenerator sdg = new StructureDiagramGenerator();
       sdg.setMolecule(molecule);
