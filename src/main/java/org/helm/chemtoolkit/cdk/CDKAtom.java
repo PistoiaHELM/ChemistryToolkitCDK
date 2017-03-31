@@ -48,7 +48,7 @@ public class CDKAtom extends IAtomBase {
   }
 
   /**
-   * @param atom
+   * @param atom given atom
    */
   public CDKAtom(IAtom atom) {
     new CDKAtom(atom, 0, new ArrayList<IBond>(4));
@@ -61,9 +61,9 @@ public class CDKAtom extends IAtomBase {
   }
 
   /**
-   * @param atom2
-   * @param i
-   * @param cdkBonds
+   * @param atom given atom
+   * @param rGroup given rgroup
+   * @param bonds list of bonds
    */
   public CDKAtom(IAtom atom, int rGroup, List<IBond> bonds) {
     this.atom = atom;
@@ -149,7 +149,7 @@ public class CDKAtom extends IAtomBase {
   /**
    * {@inheritDoc}
    * 
-   * @throws CTKException
+   * @throws CTKException general ChemToolKit exception passed to HELMToolKit
    */
   @Override
   public void setRgroup(int rGroup) throws CTKException {

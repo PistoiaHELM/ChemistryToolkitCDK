@@ -46,7 +46,7 @@ public class CDKBond implements IBondBase {
   }
 
   /**
-   * @param bond
+   * @param bond given bond
    */
   public CDKBond(IBond bond) {
     this.bond = bond;

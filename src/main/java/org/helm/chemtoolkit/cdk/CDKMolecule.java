@@ -173,7 +173,7 @@ public class CDKMolecule extends AbstractMolecule {
   /**
    * {@inheritDoc}
    * 
-   * @throws CTKException
+   * @throws CTKException general ChemToolKit exception passed to HELMToolKit
    */
   @Override
   public void generateCoordinates(int dem) throws CTKException {
@@ -188,7 +188,7 @@ public class CDKMolecule extends AbstractMolecule {
   }
 
   /**
-   * @return
+   * @return IAtomContainer 
    */
   @Override
   public IAtomContainer getMolecule() {
@@ -198,7 +198,7 @@ public class CDKMolecule extends AbstractMolecule {
   /**
    * {@inheritDoc}
    * 
-   * @throws CTKException
+   * @throws CTKException general ChemToolKit exception passed to HELMToolKit
    */
   @Override
   public void changeAtomLabel(int index, int toIndex) throws CTKException {

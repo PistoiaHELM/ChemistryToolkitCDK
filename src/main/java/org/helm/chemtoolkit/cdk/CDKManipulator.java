@@ -476,10 +476,11 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * @param molecule
-   * @param rGroup
-   * @param atom
-   * @return
+   * @param molecule given molecule
+   * @param rGroup given rgroup
+   * @param atom1 given atom1
+   * @param atom2 given atom2
+   * @return IStereoElementBase
    */
 
   @Override
@@ -526,7 +527,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   /**
    * {@inheritDoc}
    *
-   * @throws CTKException
+   * @throws CTKException general ChemToolKit exception passed to HELMToolKit
    */
   @Override
   public String convertMolecule(AbstractMolecule container, StType type) throws CTKException {
@@ -547,9 +548,9 @@ public class CDKManipulator extends AbstractChemistryManipulator {
   }
 
   /**
-   * @param molecule
-   * @return
-   * @throws CTKException
+   * @param molecule given molecule
+   * @return molfile of the molcule
+   * @throws CTKException general ChemToolKit exception passed to HELMToolKit
    */
   private String molecule2Molfile(IAtomContainer molecule) throws CTKException {
     String result = null;
