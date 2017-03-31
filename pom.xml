@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.pistoiaalliance.helm</groupId>
     <artifactId>helm2-chemistrytoolkit-cdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
         <name>helm2-chemistrytoolkit-cdk</name>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.pistoiaalliance.helm</groupId>
             <artifactId>helm2-chemistrytoolkit</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
