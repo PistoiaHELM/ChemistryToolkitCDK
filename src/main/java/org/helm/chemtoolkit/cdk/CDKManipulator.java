@@ -104,41 +104,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	}
 
 	/**
-	 * replace placeholder "*" with "R" for CDK
-	 *
-	 * @param extendedSmiles
-	 *            extended smiles
-	 * @param groups
-	 *            a list of RGroups
-	 * @return a smiles with RGroups in CDK format
-	 */
-	private String normalize(String extendedSmiles, List<String> groups) {
-		String smiles = null;
-		smiles = normalize(extendedSmiles);
-
-		Pattern pattern = Pattern.compile("\\[\\*\\]|\\[\\*:[1-9]\\d*\\]|\\[\\w+:[1-9]\\d*\\]");
-		Matcher matcher = pattern.matcher(smiles);
-		StringBuilder sb = new StringBuilder();
-		int start = 0;
-		String rGroup = "";
-		int index = 0;
-		while (matcher.find() && groups.size() > 0) {
-			rGroup = smiles.substring(start, matcher.end());
-			rGroup = rGroup.replace(matcher.group(), "[" + groups.get(index) + "]");
-
-			sb.append(rGroup);
-			index++;
-			start = matcher.end();
-		}
-
-		if (start < smiles.length()) {
-			sb.append(smiles.substring(start));
-		}
-
-		return sb.toString();
-	}
-
-	/**
 	 *
 	 * {@inheritDoc}
 	 */
