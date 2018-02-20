@@ -274,7 +274,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 		IAtomContainer molecule = getIAtomContainer(smiles);
 		// XXX: - not including Stereochemistry! '+ SmiFlavor.Stereo'
 		//      - can put the CXSMILES labels (e.g. |$R1;R2$|)  on there with: '+ SmiFlavor.CxAtomLabel'
-		SmilesGenerator generator = new SmilesGenerator(SmiFlavor.Canonical);
+		SmilesGenerator generator = new SmilesGenerator(SmiFlavor.Canonical + SmiFlavor.Stereo);
 		String result = null;
 		try {
 			result = generator.create(molecule);
