@@ -457,7 +457,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	 */
 	private IAtomContainer getIAtomContainer(String smiles) throws CTKException {
 		IAtomContainer molecule = null;
-		smiles = normalize(smiles, getRGroupsFromExtendedSmiles(smiles));
 		LOG.debug("smiles= " + smiles);
 		SmilesParser smilesParser = new SmilesParser(SilentChemObjectBuilder.getInstance());
 
@@ -473,9 +472,13 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 			molecule = sdg.getMolecule();
 
 			for (IAtom atom : molecule.atoms()) {
-				if (atom instanceof IPseudoAtom)
+				if (atom instanceof IPseudoAtom) {
+					// normalize ChemAxon special '_R1' vs 'R1'
+					String label = ((IPseudoAtom) atom).getLabel();
+					if (label.startsWith("_"))
+						((IPseudoAtom) atom).setLabel(label.substring(1));
 					atom.setSymbol("R");
-
+				}
 			}
 
 		} catch (CDKException e) {
