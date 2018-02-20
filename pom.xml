@@ -106,7 +106,7 @@
     </plugins>
   </build>
   <properties>
-    <cdk.version>1.5.14</cdk.version>
+    <cdk.version>2.1.1</cdk.version>
   </properties>
   <dependencies>
     <dependency>
