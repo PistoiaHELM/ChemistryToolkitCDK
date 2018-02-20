@@ -272,7 +272,9 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	@Override
 	public String canonicalize(String smiles) throws CTKException, CTKSmilesException {
 		IAtomContainer molecule = getIAtomContainer(smiles);
-		SmilesGenerator generator = SmilesGenerator.unique();
+		// XXX: - not including Stereochemistry! '+ SmiFlavor.Stereo'
+		//      - can put the CXSMILES labels (e.g. |$R1;R2$|)  on there with: '+ SmiFlavor.CxAtomLabel'
+		SmilesGenerator generator = new SmilesGenerator(SmiFlavor.Canonical);
 		String result = null;
 		try {
 			result = generator.create(molecule);

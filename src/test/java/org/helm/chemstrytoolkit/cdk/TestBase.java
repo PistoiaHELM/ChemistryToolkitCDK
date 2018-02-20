@@ -70,7 +70,6 @@ public abstract class TestBase {
   public void convertSMILES2MolFile() throws CTKException, Exception {
     String smiles = "[*]N1CC[C@H]1C([*])=O |r,$_R1;;;;;;_R2;$|";
     testResult = manipulator.convert(smiles, StType.SMILES);
-
   }
 
   public void convertMolFile2SMILES() throws CTKException, IOException {
