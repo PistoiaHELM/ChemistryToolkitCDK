@@ -205,11 +205,16 @@ public class CDKTest extends TestBase {
     LOG.debug(res);
 
   }
-  
-  
 
-  
-  
-  
+  @Test
+  public void atomMappedRGroups() throws Exception {
+    AbstractMolecule molecule  = manipulator.getMolecule("[*:1]N[C@H](CCCCN[*:3])C([*:2])=O D-Lysine", null);
+    Assert.assertNotNull(molecule.getRGroupAtom(1, true));
+  }
 
+  @Test
+  public void atomMappedRGroupsNonPseudo() throws Exception {
+    AbstractMolecule molecule  = manipulator.getMolecule("[H:1]N1CC[C@H]1C([OH:2])=O 2-carboxyazetidine", null);
+    Assert.assertNotNull(molecule.getRGroupAtom(1, true));
+  }
 }

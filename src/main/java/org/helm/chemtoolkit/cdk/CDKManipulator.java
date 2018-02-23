@@ -46,6 +46,7 @@ import org.helm.chemtoolkit.IAtomBase;
 import org.helm.chemtoolkit.IBondBase;
 import org.helm.chemtoolkit.IStereoElementBase;
 import org.helm.chemtoolkit.MoleculeInfo;
+import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.depict.DepictionGenerator;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.silent.Bond;
@@ -425,11 +426,26 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 
 			for (IAtom atom : molecule.atoms()) {
 				if (atom instanceof IPseudoAtom) {
-					// normalize ChemAxon special '_R1' vs 'R1'
 					String label = ((IPseudoAtom) atom).getLabel();
-					if (label.startsWith("_"))
+					// CXSMILES takes priority?
+					if (label.startsWith("_")) {
+						// normalize ChemAxon special '_R1' vs 'R1'
 						((IPseudoAtom) atom).setLabel(label.substring(1));
-					atom.setSymbol("R");
+					} else if (label.equals("*") &&
+										 atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING) != null) {
+						// the atom-class (aka atom-map) defines the rgrp number
+						int rnum = atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING);
+						((IPseudoAtom) atom).setLabel("R" + rnum);
+					}
+				} else if (atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING) != null) {
+					// create a new R group and replace a mapped atom
+					int rnum = atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING);
+					IPseudoAtom rGrp = atom.getBuilder().newInstance(IPseudoAtom.class);
+					rGrp.setAtomicNumber(0);
+					rGrp.setImplicitHydrogenCount(0);
+					rGrp.setLabel("R" + rnum);
+					rGrp.setSymbol("R");
+					AtomContainerManipulator.replaceAtomByAtom(molecule, atom, rGrp);
 				}
 			}
 
