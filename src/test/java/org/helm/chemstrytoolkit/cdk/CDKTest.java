@@ -87,7 +87,7 @@ public class CDKTest extends TestBase {
   public void convertMolFile2SMILES() throws CTKException, IOException {
     super.convertMolFile2SMILES();
     LOG.debug("canonical=" + testResult);
-    Assert.assertEquals(testResult, "*OCC1OC([H])(N2C=NC=3C(=NC=NC32)N)C(O)C1O*");
+    Assert.assertEquals(testResult, manipulator.canonicalize("C([C@@H]1[C@H]([C@H]([C@]([H])(N2C=NC3=C2N=CN=C3N)O1)O)O*)O*"));
 
   }
 
@@ -95,7 +95,7 @@ public class CDKTest extends TestBase {
   @Test(groups = {"CDKTest"})
   public void canonicalizeTest() throws CTKSmilesException, CTKException {
     super.canonicalizeTest();
-    Assert.assertEquals(testResult, "O=C1NC(=NC=2C(=NN(C12)C)CC)C=3C=C(C=CC3OCC)S(=O)(=O)N4CCN(C)CC4");
+    Assert.assertEquals(testResult, manipulator.canonicalize("O=C1NC(=NC=2C(=NN(C12)C)CC)C=3C=C(C=CC3OCC)S(=O)(=O)N4CCN(C)CC4"));
 
   }
 
@@ -205,11 +205,16 @@ public class CDKTest extends TestBase {
     LOG.debug(res);
 
   }
-  
-  
 
-  
-  
-  
+  @Test
+  public void atomMappedRGroups() throws Exception {
+    AbstractMolecule molecule  = manipulator.getMolecule("[*:1]N[C@H](CCCCN[*:3])C([*:2])=O D-Lysine", null);
+    Assert.assertNotNull(molecule.getRGroupAtom(1, true));
+  }
 
+  @Test
+  public void atomMappedRGroupsNonPseudo() throws Exception {
+    AbstractMolecule molecule  = manipulator.getMolecule("[H:1]N1CC[C@H]1C([OH:2])=O 2-carboxyazetidine", null);
+    Assert.assertNotNull(molecule.getRGroupAtom(1, true));
+  }
 }
