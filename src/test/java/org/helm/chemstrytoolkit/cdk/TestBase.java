@@ -70,7 +70,6 @@ public abstract class TestBase {
   public void convertSMILES2MolFile() throws CTKException, Exception {
     String smiles = "[*]N1CC[C@H]1C([*])=O |r,$_R1;;;;;;_R2;$|";
     testResult = manipulator.convert(smiles, StType.SMILES);
-
   }
 
   public void convertMolFile2SMILES() throws CTKException, IOException {
@@ -256,7 +255,7 @@ public abstract class TestBase {
 
     String ribose = "[H][C@@]1([*])O[C@H](CO[*])[C@@H](O[*])[C@H]1O |$;;_R1;;;;;_R3;;;_R2;;$|";
 
-    String adenin = "[*]n1cnc2c1ncnc2N |r,$_R1;;;;;;;;;;;;$|";
+    String adenin = "[*]n1cnc2c1ncnc2N |$_R1;;;;;;;;;;;;$|";
 
     String riboseR1 = "[*][H] |$_R3;$|";
     String riboseR2 = "[*][H] |$_R2;$|";

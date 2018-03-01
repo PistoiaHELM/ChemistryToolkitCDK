@@ -26,22 +26,16 @@ package org.helm.chemtoolkit.cdk;
  */
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 
 import org.helm.chemtoolkit.AbstractChemistryManipulator;
 import org.helm.chemtoolkit.AbstractMolecule;
@@ -73,15 +67,6 @@ import org.openscience.cdk.interfaces.ITetrahedralChirality;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.io.MDLV2000Writer;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
-import org.openscience.cdk.renderer.AtomContainerRenderer;
-import org.openscience.cdk.renderer.font.AWTFontManager;
-import org.openscience.cdk.renderer.generators.BasicAtomGenerator;
-import org.openscience.cdk.renderer.generators.BasicBondGenerator;
-import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
-import org.openscience.cdk.renderer.generators.ExtendedAtomGenerator;
-import org.openscience.cdk.renderer.generators.IGenerator;
-import org.openscience.cdk.renderer.generators.IGeneratorParameter;
-import org.openscience.cdk.renderer.visitor.AWTDrawVisitor;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmiFlavor;
 import org.openscience.cdk.smiles.SmilesGenerator;
@@ -116,41 +101,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 		result = components[0];
 
 		return result;
-	}
-
-	/**
-	 * replace placeholder "*" with "R" for CDK
-	 *
-	 * @param extendedSmiles
-	 *            extended smiles
-	 * @param groups
-	 *            a list of RGroups
-	 * @return a smiles with RGroups in CDK format
-	 */
-	private String normalize(String extendedSmiles, List<String> groups) {
-		String smiles = null;
-		smiles = normalize(extendedSmiles);
-
-		Pattern pattern = Pattern.compile("\\[\\*\\]|\\[\\*:[1-9]\\d*\\]|\\[\\w+:[1-9]\\d*\\]");
-		Matcher matcher = pattern.matcher(smiles);
-		StringBuilder sb = new StringBuilder();
-		int start = 0;
-		String rGroup = "";
-		int index = 0;
-		while (matcher.find() && groups.size() > 0) {
-			rGroup = smiles.substring(start, matcher.end());
-			rGroup = rGroup.replace(matcher.group(), "[" + groups.get(index) + "]");
-
-			sb.append(rGroup);
-			index++;
-			start = matcher.end();
-		}
-
-		if (start < smiles.length()) {
-			sb.append(smiles.substring(start));
-		}
-
-		return sb.toString();
 	}
 
 	/**
@@ -322,7 +272,9 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	@Override
 	public String canonicalize(String smiles) throws CTKException, CTKSmilesException {
 		IAtomContainer molecule = getIAtomContainer(smiles);
-		SmilesGenerator generator = SmilesGenerator.unique();
+		// XXX: - not including Stereochemistry! '+ SmiFlavor.Stereo'
+		//      - can put the CXSMILES labels (e.g. |$R1;R2$|)  on there with: '+ SmiFlavor.CxAtomLabel'
+		SmilesGenerator generator = new SmilesGenerator(SmiFlavor.Canonical);
 		String result = null;
 		try {
 			result = generator.create(molecule);
@@ -457,7 +409,6 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	 */
 	private IAtomContainer getIAtomContainer(String smiles) throws CTKException {
 		IAtomContainer molecule = null;
-		smiles = normalize(smiles, getRGroupsFromExtendedSmiles(smiles));
 		LOG.debug("smiles= " + smiles);
 		SmilesParser smilesParser = new SmilesParser(SilentChemObjectBuilder.getInstance());
 
@@ -473,9 +424,13 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 			molecule = sdg.getMolecule();
 
 			for (IAtom atom : molecule.atoms()) {
-				if (atom instanceof IPseudoAtom)
+				if (atom instanceof IPseudoAtom) {
+					// normalize ChemAxon special '_R1' vs 'R1'
+					String label = ((IPseudoAtom) atom).getLabel();
+					if (label.startsWith("_"))
+						((IPseudoAtom) atom).setLabel(label.substring(1));
 					atom.setSymbol("R");
-
+				}
 			}
 
 		} catch (CDKException e) {
