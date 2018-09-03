@@ -31,9 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
@@ -55,6 +52,7 @@ import org.openscience.cdk.aromaticity.ElectronDonation;
 import org.openscience.cdk.atomtype.CDKAtomTypeMatcher;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.graph.ConnectivityChecker;
 import org.openscience.cdk.graph.CycleFinder;
 import org.openscience.cdk.graph.Cycles;
 import org.openscience.cdk.interfaces.IAtom;
@@ -180,7 +178,7 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 	public String convertMolIntoSmilesWithAtomMapping(String molfile) throws CTKException {
 		IAtomContainer molecule = null;
 		molecule = getIAtomContainerFromMolFile(molfile);
-		SmilesGenerator sg = new SmilesGenerator(SmiFlavor.CxSmiles);
+		SmilesGenerator sg = new SmilesGenerator(SmiFlavor.CxSmiles + SmiFlavor.Canonical + SmiFlavor.Stereo);
 		String smiles;
 
 		try {
@@ -190,9 +188,12 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 		} catch (CDKException e) {
 			throw new CTKException("unable to create smiles for the given molfile");
 		}
-
 	}
-
+	
+	public boolean isConnected(String molfile) throws CTKException {
+		return ConnectivityChecker.isConnected(getIAtomContainerFromMolFile(molfile));
+	}
+	
 	/**
 	 * converts molfile to smiles
 	 *
