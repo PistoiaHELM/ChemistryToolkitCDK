@@ -436,16 +436,13 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 										 atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING) != null) {
 						// the atom-class (aka atom-map) defines the rgrp number
 						int rnum = atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING);
-						((IPseudoAtom) atom).setLabel("R" + rnum);
+						setPseudoatomValues((IPseudoAtom) atom, rnum);
 					}
 				} else if (atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING) != null) {
 					// create a new R group and replace a mapped atom
-					int rnum = atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING);
 					IPseudoAtom rGrp = atom.getBuilder().newInstance(IPseudoAtom.class);
-					rGrp.setAtomicNumber(0);
-					rGrp.setImplicitHydrogenCount(0);
-					rGrp.setLabel("R" + rnum);
-					rGrp.setSymbol("R");
+					int rnum = atom.getProperty(CDKConstants.ATOM_ATOM_MAPPING);
+					setPseudoatomValues(rGrp, rnum);
 					AtomContainerManipulator.replaceAtomByAtom(molecule, atom, rGrp);
 				}
 			}
@@ -454,6 +451,13 @@ public class CDKManipulator extends AbstractChemistryManipulator {
 			throw new CTKException(e.getMessage(), e);
 		}
 		return molecule;
+	}
+
+	private void setPseudoatomValues(IPseudoAtom rGrp, int rnum) {
+		rGrp.setAtomicNumber(0);
+		rGrp.setImplicitHydrogenCount(0);
+		rGrp.setLabel("R" + rnum);
+		rGrp.setSymbol("R");
 	}
 
 	@Override
